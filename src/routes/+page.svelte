@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import { PencilLine, RefreshCcw } from "@lucide/svelte";
   import { api } from "../ts/api";
   import type { CurrentSong } from "../ts/apiObjects/CurrentSong";
@@ -16,7 +16,7 @@
 
   // Songs info area
   const checkDelay = 500;
-  const checkInterval = 5000;
+  const checkInterval = 3000;
   let currentSong: CurrentSong | undefined = undefined;
   let nextSongChecker: number | undefined = undefined; // Interval used to auto refresh
   let songCheckIntervalRoutine: number | undefined = undefined;
@@ -27,8 +27,14 @@
   let currentTimestamp = -1;
   let songStartTime: number = 0;
   let songProgress: number = 0;
+  // refs for each lyric line + active index
+  let lineEls: HTMLSpanElement[] = [];
+  let activeIndex = -1;
 
-  async function registerNewSong(newSong: CurrentSong) {
+  async function registerNewSong(
+    newSong: CurrentSong,
+    noUpdateLyrics: boolean = false,
+  ) {
     // const currentTimestamp = Date.now()
     currentSong = newSong;
     const timeLeft = newSong.duration.ms - newSong.progress.ms;
@@ -40,7 +46,7 @@
     currentTimestamp = Date.now();
     songStartTime = currentTimestamp - currentSong.progress.ms;
 
-    currentSongLyrics = await api.GetSongLyric(currentSong); // Update lyrics
+    if (!noUpdateLyrics) currentSongLyrics = await api.GetSongLyric(newSong); // Update lyrics
     // console.log(currentSongLyrics);
   }
 
@@ -49,6 +55,14 @@
     if (currentSong?.track_id != fetchedSong.track_id || forced) {
       registerNewSong(fetchedSong);
       console.log("New song found: " + fetchedSong.name);
+      const el = lineEls[0];
+      el?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    } else {
+      registerNewSong(fetchedSong, true);
     }
   }
 
@@ -79,10 +93,32 @@
     }
   });
 
+  // Scroll when the active line changes
+  async function scrollToActive() {
+    await tick(); // make sure DOM is updated
+    const el = lineEls[activeIndex];
+    el?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "nearest",
+    });
+  }
+  $: if (activeIndex !== -1) scrollToActive();
+
+  // Recompute active line whenever progress or lyrics change
+  $: {
+    if (currentSongLyrics) {
+      const idx = currentSongLyrics.lines.findIndex(
+        (l) => songProgress >= l.startTime && songProgress < l.endTime,
+      );
+      if (idx !== -1 && idx !== activeIndex) activeIndex = idx;
+    }
+  }
+
   onDestroy(() => {
-    clearInterval(checkInterval);
-    clearInterval(lyricUpdater);
-    clearTimeout(nextSongChecker);
+    if (songCheckIntervalRoutine) clearInterval(songCheckIntervalRoutine);
+    if (lyricUpdater) clearInterval(lyricUpdater);
+    if (nextSongChecker) clearTimeout(nextSongChecker);
   });
 </script>
 
@@ -95,13 +131,13 @@
       {#if currentSongLyrics != undefined}
         {#each currentSongLyrics?.lines as line, i}
           <span
-            class="{line.endTime < songProgress
-              ? 'opacity-50'
-              : ''} {line.startTime < songProgress &&
-            songProgress < line.endTime
-              ? 'text-white'
-              : ''}">{line.words}</span
+            bind:this={lineEls[i]}
+            class="block py-2
+              {line.endTime < songProgress ? 'opacity-50' : ''}
+              {i === activeIndex ? 'text-white font-semibold' : ''}"
           >
+            {line.words}
+          </span>
         {/each}
       {:else}
         <span>Nothing loaded yet...</span>
@@ -116,6 +152,6 @@
       }}
       class="btn btn-square"><RefreshCcw /></button
     >
-    <div>{songProgress}</div>
+    <!-- <div>{songProgress}</div> -->
   </div>
 </div>

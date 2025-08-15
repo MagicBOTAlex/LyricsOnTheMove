@@ -80,7 +80,7 @@ export class api {
       `${trimTrailingSlash(localStorage.getItem("lyricsUrl")!)}` +
       `?trackid=${encodeURIComponent(extractSpotifyId(song.track_uri))}`;
 
-    const response = await fetch(url, GenerateHeaders("POST"));
+    const response = await fetch(url, GenerateHeaders("GET"));
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

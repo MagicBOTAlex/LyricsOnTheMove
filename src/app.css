@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: "forced-simplified";
-  src: url("/forced-simp.otf") format("otf");
+  src: url("./forced-simp.otf") format("opentype");
 }
 
 .forced-simplified * {
