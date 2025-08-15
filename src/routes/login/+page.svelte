@@ -186,7 +186,6 @@
           <input
             id="fontsize"
             name="fontsize"
-            type="url"
             class="input input-bordered w-full"
             bind:value={fontsize}
             placeholder="4rem"
