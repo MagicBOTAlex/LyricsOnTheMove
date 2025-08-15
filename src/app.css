@@ -1,1 +1,46 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
+@font-face {
+  font-family: "forced-simplified";
+  src: url("/forced-simp.otf") format("otf");
+}
+
+.forced-simplified * {
+  font-family: "forced-simplified";
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: oklch(26% 0.065 152.934);
+  --color-base-200: oklch(39% 0.095 152.535);
+  --color-base-300: oklch(44% 0.119 151.328);
+  --color-base-content: oklch(96% 0.044 156.743);
+  --color-primary: oklch(55% 0.027 264.364);
+  --color-primary-content: oklch(98% 0.002 247.839);
+  --color-secondary: oklch(70% 0.213 47.604);
+  --color-secondary-content: oklch(98% 0.016 73.684);
+  --color-accent: oklch(0% 0 0);
+  --color-accent-content: oklch(100% 0 0);
+  --color-neutral: oklch(62% 0.194 149.214);
+  --color-neutral-content: oklch(98% 0.018 155.826);
+  --color-info: oklch(68% 0.169 237.323);
+  --color-info-content: oklch(97% 0.013 236.62);
+  --color-success: oklch(72% 0.219 149.579);
+  --color-success-content: oklch(98% 0.018 155.826);
+  --color-warning: oklch(79% 0.184 86.047);
+  --color-warning-content: oklch(98% 0.026 102.212);
+  --color-error: oklch(65% 0.241 354.308);
+  --color-error-content: oklch(97% 0.014 343.198);
+  --radius-selector: 0rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 1;
+}
