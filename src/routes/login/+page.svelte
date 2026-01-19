@@ -8,7 +8,7 @@
 
   let username: string = "";
   let password: string = "";
-  let lyricsUrl: string = "https://lyrics.deprived.dev";
+  let lyricsUrl: string = "https://spotify.api.deprived.dev";
   let nowPlayingUrl: string = "https://spotify.playing.deprived.dev";
   let fontsize: string = "";
   let flipX = false;
