@@ -2,14 +2,17 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
+  import { flip } from "svelte/animate";
 
   type FieldName = "username" | "password" | "lyricsUrl" | "nowPlayingUrl";
 
   let username: string = "";
   let password: string = "";
-  let lyricsUrl: string = "";
-  let nowPlayingUrl: string = "";
+  let lyricsUrl: string = "https://lyrics.deprived.dev";
+  let nowPlayingUrl: string = "https://spotify.playing.deprived.dev";
   let fontsize: string = "";
+  let flipX = false;
+  let flipY = false;
 
   let saving: boolean = false;
   let notice: string = "";
@@ -55,6 +58,8 @@
       localStorage.setItem("lyricsUrl", lyricsUrl);
       localStorage.setItem("nowPlayingUrl", nowPlayingUrl);
       localStorage.setItem("font-size", fontsize ?? "4rem");
+      localStorage.setItem("flipX", flipX.toString());
+      localStorage.setItem("flipY", flipY.toString());
       notice = "Saved settings.";
 
       setTimeout(() => {
@@ -70,8 +75,8 @@
   onMount(() => {
     username = localStorage.getItem("username") ?? "";
     password = localStorage.getItem("password") ?? "";
-    lyricsUrl = localStorage.getItem("lyricsUrl") ?? "";
-    nowPlayingUrl = localStorage.getItem("nowPlayingUrl") ?? "";
+    lyricsUrl = localStorage.getItem("lyricsUrl") ?? lyricsUrl;
+    nowPlayingUrl = localStorage.getItem("nowPlayingUrl") ?? nowPlayingUrl;
     fontsize = localStorage.getItem("font-size") ?? "";
   });
 </script>
@@ -190,6 +195,27 @@
             bind:value={fontsize}
             placeholder="4rem"
           />
+        </div>
+
+        <div class="flex flex-col gap-1 w-full">
+          <div class=" flex w-full">
+            <span class="pr-2">Flip X</span>
+            <input
+              name="Flip"
+              type="checkbox"
+              class="checkbox rounded"
+              bind:checked={flipX}
+            />
+          </div>
+          <div class=" flex w-full">
+            <span class="pr-2">Flip Y</span>
+            <input
+              name="Flip"
+              type="checkbox"
+              class="checkbox rounded"
+              bind:checked={flipY}
+            />
+          </div>
         </div>
 
         <!-- Actions -->
