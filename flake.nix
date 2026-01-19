@@ -33,7 +33,7 @@
             export npm_config_cache="$PWD/.npm-cache"
             pnpm install -f
             pnpm run build
-            caddy run --config <(echo ":4173 { root * build; file_server; try_files {path} /index.html }") --adapter caddyfile
+            caddy run --config <(printf ":4173 {\n root * build\n file_server\n try_files {path} /index.html\n}") --adapter caddyfile
           '';
         };
 
