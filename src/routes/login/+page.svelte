@@ -2,7 +2,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
-  import { flip } from "svelte/animate";
 
   type FieldName = "username" | "password" | "lyricsUrl" | "nowPlayingUrl";
 
@@ -13,6 +12,7 @@
   let fontsize: string = "";
   let flipX = false;
   let flipY = false;
+  let chinaMode = false;
 
   let saving: boolean = false;
   let notice: string = "";
@@ -60,11 +60,12 @@
       localStorage.setItem("font-size", fontsize ?? "4rem");
       localStorage.setItem("flipX", flipX.toString());
       localStorage.setItem("flipY", flipY.toString());
+      localStorage.setItem("china", chinaMode.toString());
       notice = "Saved settings.";
 
       setTimeout(() => {
         goto("/");
-      }, 1000);
+      }, 300);
     } catch {
       notice = "Something went wrong.";
     } finally {
@@ -78,6 +79,9 @@
     lyricsUrl = localStorage.getItem("lyricsUrl") ?? lyricsUrl;
     nowPlayingUrl = localStorage.getItem("nowPlayingUrl") ?? nowPlayingUrl;
     fontsize = localStorage.getItem("font-size") ?? "";
+    flipX = localStorage.getItem("flipX") === "true";
+    flipY = localStorage.getItem("flipY") === "true";
+    chinaMode = localStorage.getItem("china") === "true";
   });
 </script>
 
@@ -214,6 +218,15 @@
               type="checkbox"
               class="checkbox rounded"
               bind:checked={flipY}
+            />
+          </div>
+          <div class=" flex w-full">
+            <span class="pr-2">Chine mode</span>
+            <input
+              name="China mode"
+              type="checkbox"
+              class="checkbox rounded"
+              bind:checked={chinaMode}
             />
           </div>
         </div>

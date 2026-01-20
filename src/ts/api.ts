@@ -60,29 +60,44 @@ function extractJsonPayload(body: string): string {
 }
 
 export class api {
-  static async GetCurrentSong(): Promise<CurrentSong> {
-    const response = await fetch(
-      trimTrailingSlash(localStorage.getItem("nowPlayingUrl")!) +
-        "/playback/current",
-      GenerateHeaders("GET"),
-    );
+  static async GetCurrentSong(): Promise<CurrentSong | undefined> {
+    let response;
+    try {
+      response = await fetch(
+        trimTrailingSlash(localStorage.getItem("nowPlayingUrl")!) +
+          "/playback/current",
+        GenerateHeaders("GET"),
+      );
+    } catch {}
+
+    if (!response) {
+      return;
+    }
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.warn(`HTTP error! Status: ${response.status}`);
     }
 
     const data = await response.json();
     return new CurrentSong(data);
   }
 
-  static async GetSongLyric(song: CurrentSong): Promise<SongLyrics> {
+  static async GetSongLyric(
+    song: CurrentSong,
+  ): Promise<SongLyrics | undefined> {
     const url =
       `${trimTrailingSlash(localStorage.getItem("lyricsUrl")!)}` +
       `?trackid=${encodeURIComponent(extractSpotifyId(song.track_uri))}`;
 
-    const response = await fetch(url, GenerateHeaders("GET"));
+    let response;
+    try {
+      response = await fetch(url, GenerateHeaders("GET"));
+    } catch {}
+    if (!response) {
+      return;
+    }
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.warn(`HTTP error! Status: ${response.status}`);
     }
 
     // Read as text first (do not use response.json())

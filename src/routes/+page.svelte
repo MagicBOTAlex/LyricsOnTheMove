@@ -1,16 +1,20 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { onDestroy, onMount, tick } from "svelte";
-  import { PencilLine, RefreshCcw } from "@lucide/svelte";
+  import { PencilLine, RefreshCcw, Pause } from "@lucide/svelte";
   import { api } from "../ts/api";
   import type { CurrentSong } from "../ts/apiObjects/CurrentSong";
   import type { SongLyrics } from "../ts/apiObjects/SongLyrics";
+  import CSentence from "./CSentence.svelte";
 
   let username: string | null = null;
   let password: string | null = null;
   let lyricsUrl: string | null = null;
   let nowPlayingUrl: string | null = null;
   let fontsize: string = "";
+  let flipX = false;
+  let flipY = false;
+  let chinaMode = false;
 
   let credentialsReady = false;
 
@@ -30,6 +34,7 @@
   // refs for each lyric line + active index
   let lineEls: HTMLSpanElement[] = [];
   let activeIndex = -1;
+  let isPaused = false;
 
   async function registerNewSong(
     newSong: CurrentSong,
@@ -43,6 +48,7 @@
       onRefresh();
     }, timeLeft + checkDelay);
 
+    isPaused = !newSong.is_playing;
     currentTimestamp = Date.now();
     songStartTime = currentTimestamp - currentSong.progress.ms;
 
@@ -50,8 +56,12 @@
     // console.log(currentSongLyrics);
   }
 
+  // On check of song
   async function onRefresh(forced: boolean = false) {
     const fetchedSong = await api.GetCurrentSong();
+    if (!fetchedSong) {
+      return;
+    }
     if (currentSong?.track_id != fetchedSong.track_id || forced) {
       registerNewSong(fetchedSong);
       console.log("New song found: " + fetchedSong.name);
@@ -72,6 +82,9 @@
     lyricsUrl = localStorage.getItem("lyricsUrl");
     nowPlayingUrl = localStorage.getItem("nowPlayingUrl");
     fontsize = localStorage.getItem("font-size") || "4rem";
+    flipX = localStorage.getItem("flipX") === "true";
+    flipY = localStorage.getItem("flipY") === "true";
+    chinaMode = localStorage.getItem("china") === "true";
     if (
       username === null ||
       password === null ||
@@ -82,13 +95,18 @@
     } else {
       credentialsReady = true;
       onRefresh();
+
+      // Start song checker interval
       songCheckIntervalRoutine = setInterval(() => {
         onRefresh();
       }, checkInterval);
+
+      // Start Lyrics sync
       lyricUpdater = setInterval(() => {
-        currentTimestamp = Date.now();
+        if (!isPaused) {
+          currentTimestamp = Date.now();
+        }
         songProgress = currentTimestamp - songStartTime;
-        // console.log(songProgress);
       }, lyricStepInterval);
     }
   });
@@ -127,31 +145,50 @@
     class="bg-black w-full max-h-screen forced-simplified overflow-y-scroll"
     style="font-size: {fontsize};"
   >
-    <div class="w-full flex flex-col justify-center items-center">
+    <div
+      class="w-full flex flex-col justify-center items-center {flipX
+        ? '-scale-x-100'
+        : ''} {flipY ? '-scale-y-100' : ''}"
+    >
       {#if currentSongLyrics != undefined}
-        {#each currentSongLyrics?.lines as line, i}
-          <span
+        {#each currentSongLyrics.lines as line, i}
+          <div
             bind:this={lineEls[i]}
             class="block py-2
               {line.endTime < songProgress ? 'opacity-50' : ''}
               {i === activeIndex ? 'text-white font-semibold' : ''}"
           >
-            {line.words}
-          </span>
+            {#if line}
+              {#if chinaMode}
+                <CSentence line={line.words} />
+              {:else}
+                {line.words}
+              {/if}
+            {/if}
+          </div>
         {/each}
       {:else}
         <span>Nothing loaded yet...</span>
       {/if}
     </div>
   </div>
-  <div class="p-2 flex flex-col gap-2">
-    <a href="/login" class="btn btn-square"><PencilLine /></a>
+  <div class="absolute p-2 flex flex-col gap-2">
+    <a
+      href="/login"
+      class="btn btn-square accent-slate-500 opacity-50 backdrop-blur-xl"
+      ><PencilLine /></a
+    >
     <button
       on:click={() => {
         onRefresh(true);
       }}
-      class="btn btn-square"><RefreshCcw /></button
+      class="btn btn-square accent-slate-500 opacity-50 backdrop-blur-xl"
+      ><RefreshCcw /></button
     >
     <!-- <div>{songProgress}</div> -->
   </div>
+
+  {#if isPaused}
+    <Pause class="absolute left-0 m-8 w-16 h-16" />
+  {/if}
 </div>
