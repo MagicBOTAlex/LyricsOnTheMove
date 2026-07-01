@@ -20,8 +20,8 @@
       <div class="grid justify-center">
         <div class="">{char}</div>
         <div
-          class="text-center opacity-60 blur-[{blur}]"
-          style="top-margin: 1rem; font-size: 1.5rem;"
+          class="text-center opacity-60"
+          style="top-margin: 1rem; font-size: 1.5rem; filter: blur({blur});"
         >
           {#if char == " "}
             &nbsp &nbsp
