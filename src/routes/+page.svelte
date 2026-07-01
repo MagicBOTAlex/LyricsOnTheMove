@@ -15,6 +15,7 @@
   let flipX = false;
   let flipY = false;
   let chinaMode = false;
+  let pinyinBlur = "2px";
 
   let credentialsReady = false;
 
@@ -85,6 +86,7 @@
     flipX = localStorage.getItem("flipX") === "true";
     flipY = localStorage.getItem("flipY") === "true";
     chinaMode = localStorage.getItem("china") === "true";
+    pinyinBlur = localStorage.getItem("blur") ?? "2px";
     if (
       username === null ||
       password === null ||
@@ -160,7 +162,7 @@
           >
             {#if line}
               {#if chinaMode}
-                <CSentence line={line.words} />
+                <CSentence line={line.words} blur={pinyinBlur} />
               {:else}
                 {line.words}
               {/if}

@@ -4,6 +4,7 @@
   import pinyin from "pinyin";
 
   export let line = "";
+  export let blur = "";
   let isReady = false;
 
   onMount(() => {
@@ -19,7 +20,7 @@
       <div class="grid justify-center">
         <div class="">{char}</div>
         <div
-          class="text-center opacity-60 blur-[2px]"
+          class="text-center opacity-60 blur-[{blur}]"
           style="top-margin: 1rem; font-size: 1.5rem;"
         >
           {#if char == " "}
