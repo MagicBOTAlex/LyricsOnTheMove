@@ -1,0 +1,32 @@
+0 verbose cli /nix/store/1qkhzhgx9w8rawvy8lvbaxqh4xb0srad-nodejs-22.10.0/bin/node /nix/store/1qkhzhgx9w8rawvy8lvbaxqh4xb0srad-nodejs-22.10.0/bin/npm
+1 info using npm@10.9.0
+2 info using node@v22.10.0
+3 silly config load:file:/nix/store/1qkhzhgx9w8rawvy8lvbaxqh4xb0srad-nodejs-22.10.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/botmain/.local/share/nvim/mason/staging/prettier/.npmrc
+5 silly config load:file:/home/botmain/.npmrc
+6 silly config load:file:/nix/store/1qkhzhgx9w8rawvy8lvbaxqh4xb0srad-nodejs-22.10.0/etc/npmrc
+7 verbose title npm install prettier@3.9.1
+8 verbose argv "install" "prettier@3.9.1"
+9 verbose logfile logs-max:10 dir:/home/botmain/Desktop/projects/2026/LyricsOnTheMove/.npm-cache/_logs/2026-07-01T22_56_59_026Z-
+10 verbose logfile /home/botmain/Desktop/projects/2026/LyricsOnTheMove/.npm-cache/_logs/2026-07-01T22_56_59_026Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 silly idealTree buildDeps
+14 silly fetch manifest prettier@3.9.1
+15 silly packumentCache full:https://registry.npmjs.org/prettier cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/prettier 120ms (cache miss)
+17 silly packumentCache full:https://registry.npmjs.org/prettier set size:undefined disposed:false
+18 silly placeDep ROOT prettier@3.9.1 OK for: @mason/prettier@1.0.0 want: 3.9.1
+19 silly reify moves {}
+20 silly audit bulk request { prettier: [ '3.9.1' ] }
+21 silly tarball no local data for prettier@https://registry.npmjs.org/prettier/-/prettier-3.9.1.tgz. Extracting by manifest.
+22 http fetch GET 200 https://registry.npmjs.org/prettier/-/prettier-3.9.1.tgz 155ms (cache miss)
+23 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 189ms
+24 silly audit report {}
+25 silly ADD node_modules/prettier
+26 verbose cwd /home/botmain/.local/share/nvim/mason/staging/prettier
+27 verbose os Linux 6.18.32
+28 verbose node v22.10.0
+29 verbose npm  v10.9.0
+30 verbose exit 0
+31 info ok

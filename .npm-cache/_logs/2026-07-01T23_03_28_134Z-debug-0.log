@@ -1,0 +1,18 @@
+0 verbose cli /nix/store/1qkhzhgx9w8rawvy8lvbaxqh4xb0srad-nodejs-22.10.0/bin/node /nix/store/1qkhzhgx9w8rawvy8lvbaxqh4xb0srad-nodejs-22.10.0/lib/node_modules/npm/bin/npm-cli.js
+1 info using npm@10.9.0
+2 info using node@v22.10.0
+3 silly config load:file:/nix/store/1qkhzhgx9w8rawvy8lvbaxqh4xb0srad-nodejs-22.10.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/botmain/Desktop/projects/2026/LyricsOnTheMove/.npmrc
+5 silly config load:file:/home/botmain/.npmrc
+6 silly config load:file:/nix/store/1qkhzhgx9w8rawvy8lvbaxqh4xb0srad-nodejs-22.10.0/etc/npmrc
+7 verbose title npm exec prettier --stdin-filepath /home/botmain/Desktop/projects/2026/LyricsOnTheMove/src/routes/login/+page.svelte
+8 verbose argv "exec" "--" "prettier" "--stdin-filepath" "/home/botmain/Desktop/projects/2026/LyricsOnTheMove/src/routes/login/+page.svelte"
+9 verbose logfile logs-max:10 dir:/home/botmain/Desktop/projects/2026/LyricsOnTheMove/.npm-cache/_logs/2026-07-01T23_03_28_134Z-
+10 verbose logfile /home/botmain/Desktop/projects/2026/LyricsOnTheMove/.npm-cache/_logs/2026-07-01T23_03_28_134Z-debug-0.log
+11 silly logfile done cleaning log files
+12 verbose cwd /home/botmain/Desktop/projects/2026/LyricsOnTheMove
+13 verbose os Linux 6.18.32
+14 verbose node v22.10.0
+15 verbose npm  v10.9.0
+16 verbose exit 0
+17 info ok

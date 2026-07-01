@@ -10,6 +10,7 @@
   let lyricsUrl: string = "https://spotify.api.deprived.dev";
   let nowPlayingUrl: string = "https://spotify.playing.deprived.dev";
   let fontsize: string = "";
+  let pinyinBlur: string = "2px";
   let flipX = false;
   let flipY = false;
   let chinaMode = false;
@@ -61,6 +62,7 @@
       localStorage.setItem("flipX", flipX.toString());
       localStorage.setItem("flipY", flipY.toString());
       localStorage.setItem("china", chinaMode.toString());
+      localStorage.setItem("blue", pinyinBlur.toString());
       notice = "Saved settings.";
 
       setTimeout(() => {
@@ -82,6 +84,7 @@
     flipX = localStorage.getItem("flipX") === "true";
     flipY = localStorage.getItem("flipY") === "true";
     chinaMode = localStorage.getItem("china") === "true";
+    pinyinBlur = localStorage.getItem("blur") ?? "2px";
   });
 </script>
 
@@ -229,6 +232,21 @@
               bind:checked={chinaMode}
             />
           </div>
+          {#if chinaMode}
+            <div class="relative flex w-full items-center">
+              <div
+                class="flex h-full pr-2 justify-center items-center text-nowrap"
+              >
+                Pinyin blur
+              </div>
+              <input
+                name="blur amount"
+                type="text"
+                class="input"
+                bind:value={pinyinBlur}
+              />
+            </div>
+          {/if}
         </div>
 
         <!-- Actions -->

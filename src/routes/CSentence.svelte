@@ -18,7 +18,10 @@
       {@const pin = pinyin(char)[0][0]}
       <div class="grid justify-center">
         <div class="">{char}</div>
-        <div class="text-center" style="top-margin: 1rem; font-size: 1.5rem;">
+        <div
+          class="text-center opacity-60 blur-[2px]"
+          style="top-margin: 1rem; font-size: 1.5rem;"
+        >
           {#if char == " "}
             &nbsp &nbsp
           {/if}
