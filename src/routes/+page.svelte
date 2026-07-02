@@ -4,7 +4,7 @@
   import { PencilLine, RefreshCcw, Pause } from "@lucide/svelte";
   import { api } from "../ts/api";
   import type { CurrentSong } from "../ts/apiObjects/CurrentSong";
-  import type { SongLyrics } from "../ts/apiObjects/SongLyrics";
+  import type { LyricLine, SongLyrics } from "../ts/apiObjects/SongLyrics";
   import CSentence from "./CSentence.svelte";
 
   let username: string | null = null;
@@ -113,6 +113,19 @@
     }
   });
 
+  function seek(line: LyricLine) {
+    api.Seek(line.startTime);
+
+    // Recalculate songStartTime so lyricUpdater stays synced
+    currentTimestamp = Date.now();
+    songStartTime = currentTimestamp - line.startTime;
+    songProgress = line.startTime;
+
+    if (currentSongLyrics) {
+      activeIndex = currentSongLyrics.lines.indexOf(line);
+    }
+  }
+
   // Scroll when the active line changes
   async function scrollToActive() {
     await tick(); // make sure DOM is updated
@@ -154,11 +167,16 @@
     >
       {#if currentSongLyrics != undefined}
         {#each currentSongLyrics.lines as line, i}
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div
             bind:this={lineEls[i]}
-            class="block py-2
+            class="block py-2 cursor-pointer
               {line.endTime < songProgress ? 'opacity-50' : ''}
               {i === activeIndex ? 'text-white font-semibold' : ''}"
+            on:click={() => {
+              seek(line);
+            }}
           >
             {#if line}
               {#if chinaMode}

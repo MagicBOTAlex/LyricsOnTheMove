@@ -5,7 +5,7 @@ type RawLyricLine = {
   endTimeMs: string;
 };
 
-type LyricLine = RawLyricLine & {
+export type LyricLine = RawLyricLine & {
   // Parsed numeric timestamps (ms)
   startTime: number;
   endTime: number;

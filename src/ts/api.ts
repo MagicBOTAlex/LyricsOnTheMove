@@ -114,4 +114,28 @@ export class api {
 
     return new SongLyrics(data as any);
   }
+
+  static async Seek(ms: number): Promise<boolean> {
+    let response;
+    try {
+      response = await fetch(
+        `${trimTrailingSlash(localStorage.getItem("nowPlayingUrl")!)}/playback/seek?t=${ms}`,
+        GenerateHeaders("GET"),
+      );
+    } catch (e) {
+      console.error("Network error attempting to seek:", e);
+      return false;
+    }
+
+    if (!response) {
+      return false;
+    }
+
+    if (!response.ok) {
+      console.warn(`HTTP error during seek! Status: ${response.status}`);
+      return false;
+    }
+
+    return true;
+  }
 }
