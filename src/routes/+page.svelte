@@ -55,21 +55,47 @@
       const lyrics = await api.GetSongLyric(newSong);
 
       if (lyrics && lyrics.lines) {
-        // Fetch translations for all lines concurrently
-        const translatedLines = await Promise.all(
-          lyrics.lines.map(async (line) => {
-            const translated = await api.translate(line.words);
-            return {
-              ...line,
-              translatedText: translated || "", // Fallback to original text if translation fails
-            };
-          }),
-        );
+        // 1. Immediately set the raw lyrics so the text displays right away
+        currentSongLyrics = lyrics;
 
-        currentSongLyrics = {
-          ...lyrics,
-          lines: translatedLines,
-        };
+        // 2. Define how many lines to request per batch and the delay between batches
+        const chunkSize = 3; // Number of lines translated at once
+        const delayMs = 400; // Wait time (in ms) between chunks (~3-4 seconds total for a normal song)
+
+        // We work on a copy to preserve Svelte reactivity updates
+        let updatedLines = [...lyrics.lines];
+
+        // 3. Progressively process chunks of lines
+        for (let i = 0; i < updatedLines.length; i += chunkSize) {
+          // If the song changed while we were waiting, abort this old sequence
+          if (currentSong.track_id !== newSong.track_id) break;
+
+          const chunk = updatedLines.slice(i, i + chunkSize);
+
+          // Translate the current small chunk concurrently
+          await Promise.all(
+            chunk.map(async (line, index) => {
+              const actualIndex = i + index;
+              const translated = await api.translate(line.words);
+
+              updatedLines[actualIndex] = {
+                ...line,
+                translatedText: translated || line.words,
+              };
+            }),
+          );
+
+          // Update the template state so translations pop in progressively
+          currentSongLyrics = {
+            ...lyrics,
+            lines: [...updatedLines],
+          };
+
+          // Throttle the loop across a few seconds
+          if (i + chunkSize < updatedLines.length) {
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
+          }
+        }
       } else {
         currentSongLyrics = lyrics;
       }
