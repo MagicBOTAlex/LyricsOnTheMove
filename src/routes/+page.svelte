@@ -41,20 +41,39 @@
     newSong: CurrentSong,
     noUpdateLyrics: boolean = false,
   ) {
-    // const currentTimestamp = Date.now()
     currentSong = newSong;
     const timeLeft = newSong.duration.ms - newSong.progress.ms;
     nextSongChecker = setTimeout(async () => {
       console.log("Song finished. Checking for next song");
       onRefresh();
     }, timeLeft + checkDelay);
-
     isPaused = !newSong.is_playing;
     currentTimestamp = Date.now();
     songStartTime = currentTimestamp - currentSong.progress.ms;
 
-    if (!noUpdateLyrics) currentSongLyrics = await api.GetSongLyric(newSong); // Update lyrics
-    // console.log(currentSongLyrics);
+    if (!noUpdateLyrics) {
+      const lyrics = await api.GetSongLyric(newSong);
+
+      if (lyrics && lyrics.lines) {
+        // Fetch translations for all lines concurrently
+        const translatedLines = await Promise.all(
+          lyrics.lines.map(async (line) => {
+            const translated = await api.translate(line.words);
+            return {
+              ...line,
+              translatedText: translated || "", // Fallback to original text if translation fails
+            };
+          }),
+        );
+
+        currentSongLyrics = {
+          ...lyrics,
+          lines: translatedLines,
+        };
+      } else {
+        currentSongLyrics = lyrics;
+      }
+    }
   }
 
   // On check of song
@@ -167,11 +186,9 @@
     >
       {#if currentSongLyrics != undefined}
         {#each currentSongLyrics.lines as line, i}
-          <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div
             bind:this={lineEls[i]}
-            class="block py-2 cursor-pointer
+            class="block py-2 cursor-pointer text-center
               {line.endTime < songProgress ? 'opacity-50' : ''}
               {i === activeIndex ? 'text-white font-semibold' : ''}"
             on:click={() => {
@@ -180,12 +197,25 @@
           >
             {#if line}
               {#if chinaMode}
+                <div
+                  style="font-size: calc({fontsize} * 0.3); opacity: 0.8; margin-bottom: 4px;"
+                >
+                  {line.translatedText || "Translating..."}
+                </div>
+
                 <CSentence
                   line={line.words}
                   blur={i + 1 > activeIndex ? pinyinBlur : ""}
                 />
               {:else}
-                {line.words}
+                <div>{line.words}</div>
+                {#if line.translatedText}
+                  <div
+                    style="font-size: calc({fontsize} * 0.35); opacity: 0.7; margin-top: 4px;"
+                  >
+                    {line.translatedText}
+                  </div>
+                {/if}
               {/if}
             {/if}
           </div>

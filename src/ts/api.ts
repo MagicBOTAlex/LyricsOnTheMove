@@ -138,4 +138,44 @@ export class api {
 
     return true;
   }
+
+  static async translate(text: string): Promise<string | null> {
+    // Return early if there's nothing to translate
+    if (!text.trim()) return "";
+
+    try {
+      const response = await fetch(
+        `${localStorage.getItem("libreTransUrl")!}/translate`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            q: text,
+            source: "auto",
+            target: "en",
+            format: "text",
+            alternatives: 0,
+            api_key: "",
+          }),
+          headers: {
+            ...GenerateHeaders("POST").headers, // Reuses auth/cors configs from your helper
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        console.warn(`Translation HTTP error! Status: ${response.status}`);
+        return text; // Fallback to original text on API failure
+      }
+
+      const data = await response.json();
+
+      // Assuming LibreTranslate / LibreTranslate-like API format:
+      // { translatedText: "..." }
+      return data.translatedText || text;
+    } catch (e) {
+      // console.error("Network error attempting to translate:", e);
+      return null; // Fallback to original text on network failure
+    }
+  }
 }

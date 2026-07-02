@@ -3,12 +3,18 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
 
-  type FieldName = "username" | "password" | "lyricsUrl" | "nowPlayingUrl";
+  type FieldName =
+    | "username"
+    | "password"
+    | "lyricsUrl"
+    | "nowPlayingUrl"
+    | "libreTransUrl";
 
   let username: string = "";
   let password: string = "";
   let lyricsUrl: string = "https://spotify.api.deprived.dev";
   let nowPlayingUrl: string = "https://spotify.playing.deprived.dev";
+  let libreTransUrl: string = "https://trans.deprived.dev";
   let fontsize: string = "";
   let pinyinBlur: string = "2px";
   let flipX = false;
@@ -40,6 +46,7 @@
 
     checkUrl("lyricsUrl", lyricsUrl, "Spotify Lyrics API URL");
     checkUrl("nowPlayingUrl", nowPlayingUrl, "Spotify Now Playing URL");
+    checkUrl("libreTransUrl", libreTransUrl, "Libre translate URL");
 
     errors = next;
     return Object.keys(next).length === 0;
@@ -58,6 +65,7 @@
       localStorage.setItem("password", password);
       localStorage.setItem("lyricsUrl", lyricsUrl);
       localStorage.setItem("nowPlayingUrl", nowPlayingUrl);
+      localStorage.setItem("libreTransUrl", libreTransUrl);
       localStorage.setItem("font-size", fontsize ?? "4rem");
       localStorage.setItem("flipX", flipX.toString());
       localStorage.setItem("flipY", flipY.toString());
@@ -80,6 +88,7 @@
     password = localStorage.getItem("password") ?? "";
     lyricsUrl = localStorage.getItem("lyricsUrl") ?? lyricsUrl;
     nowPlayingUrl = localStorage.getItem("nowPlayingUrl") ?? nowPlayingUrl;
+    libreTransUrl = localStorage.getItem("libreTransUrl") ?? libreTransUrl;
     fontsize = localStorage.getItem("font-size") ?? "";
     flipX = localStorage.getItem("flipX") === "true";
     flipY = localStorage.getItem("flipY") === "true";
@@ -161,6 +170,31 @@
           {#if errors.lyricsUrl}
             <label id="lyricsUrl-error" class="label">
               <span class="label-text-alt text-error">{errors.lyricsUrl}</span>
+            </label>
+          {/if}
+        </div>
+
+        <!-- Spotify Now Playing URL -->
+        <div class="form-control">
+          <label class="label" for="libreTransUrl">
+            <span class="label-text">Spotify Now Playing URL</span>
+          </label>
+          <input
+            id="libreTransUrl"
+            name="libreTransUrl"
+            type="url"
+            class="input input-bordered w-full"
+            bind:value={libreTransUrl}
+            placeholder="https://your-service.example.com/now-playing"
+            aria-invalid={errors.libreTransUrl ? "true" : "false"}
+            aria-describedby="libreTransUrl-error"
+            required
+          />
+          {#if errors.nowPlayingUrl}
+            <label id="libreTransUrl-error" class="label">
+              <span class="label-text-alt text-error"
+                >{errors.nowPlayingUrl}</span
+              >
             </label>
           {/if}
         </div>
