@@ -180,7 +180,10 @@
           >
             {#if line}
               {#if chinaMode}
-                <CSentence line={line.words} blur={pinyinBlur} />
+                <CSentence
+                  line={line.words}
+                  blur={i + 1 > activeIndex ? pinyinBlur : ""}
+                />
               {:else}
                 {line.words}
               {/if}
