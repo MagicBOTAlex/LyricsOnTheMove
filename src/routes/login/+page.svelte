@@ -62,7 +62,7 @@
       localStorage.setItem("flipX", flipX.toString());
       localStorage.setItem("flipY", flipY.toString());
       localStorage.setItem("china", chinaMode.toString());
-      localStorage.setItem("blue", pinyinBlur.toString());
+      localStorage.setItem("blur", pinyinBlur.toString());
       notice = "Saved settings.";
 
       setTimeout(() => {
