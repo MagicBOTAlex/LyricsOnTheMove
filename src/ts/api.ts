@@ -170,6 +170,10 @@ export class api {
 
       const data = await response.json();
 
+      if (data.detectedLanguage.language === "en") {
+        return null;
+      }
+
       // Assuming LibreTranslate / LibreTranslate-like API format:
       // { translatedText: "..." }
       return data.translatedText || text;

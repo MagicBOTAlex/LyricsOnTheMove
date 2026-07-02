@@ -80,7 +80,7 @@
 
               updatedLines[actualIndex] = {
                 ...line,
-                translatedText: translated || line.words,
+                translatedText: translated,
               };
             }),
           );
@@ -212,6 +212,8 @@
     >
       {#if currentSongLyrics != undefined}
         {#each currentSongLyrics.lines as line, i}
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div
             bind:this={lineEls[i]}
             class="block py-2 cursor-pointer text-center
@@ -226,7 +228,7 @@
                 <div
                   style="font-size: calc({fontsize} * 0.3); opacity: 0.8; margin-bottom: 4px;"
                 >
-                  {line.translatedText || "Translating..."}
+                  {line.translatedText || ""}
                 </div>
 
                 <CSentence
